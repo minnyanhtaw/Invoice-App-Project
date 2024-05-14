@@ -7,12 +7,12 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app" class="max-w-[1000px] mx-auto p-5">
+    <div id="app" class="max-w-[1000px] mx-auto p-5 h-screen flex flex-col">
       <header class="mb-10">
         <h1 class="text-3xl font-bold">MMS IT Solution</h1>
         <p class="text-gray-500">Invoice App</p>
       </header>
-      <section id="createFormSection" class="mb-10">
+      <section id="createFormSection" class="mb-10 print:hidden">
         <form action="" id="createForm">
           <div class="flex gap-3">
             <div class="basis-5/12">
@@ -55,16 +55,17 @@
       </section>
 
       <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden"
       >
         <thead
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
+            <th scope="col" class="px-6 py-3">#</th>
             <th scope="col" class="px-6 py-3">Product name</th>
-            <th scope="col" class="px-6 py-3">Price</th>
-            <th scope="col" class="px-6 py-3">Quantity</th>
-            <th scope="col" class="px-6 py-3">Coast</th>
+            <th scope="col" class="px-6 py-3 text-end">Price</th>
+            <th scope="col" class="px-6 py-3 text-end">Quantity</th>
+            <th scope="col" class="px-6 py-3 text-end">Coast</th>
             <th scope="col" class="px-6 py-3">
               <span class="sr-only">Edit</span>
             </th>
@@ -75,8 +76,8 @@
             class="group hidden last:table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
           >
             <th
-              colspan="5"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
+              colspan="6"
+              class="px-6 py-4 font-bold text-gray-900 whitespace-nowrap dark:text-white text-center"
             >
               There is no record
             </th>
@@ -85,32 +86,130 @@
 
         <tfoot>
           <tr
-            class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            class="border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600"
           >
             <th
               colspan="4"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
+              class="px-6 py-4 font-bold text-gray-900 whitespace-nowrap dark:text-white text-center"
             >
               Total
             </th>
-            <td class="px-6 py-4 text-end">$<span>0</span></td>
+            <td class="px-6 py-4 text-end font-bold">
+              $ <span id="recordTotal">0</span>
+            </td>
           </tr>
         </tfoot>
       </table>
+
+      <section
+        id="inventorySheet"
+        class="fixed w-96 top-0 left-0 shadow h-screen bg-white p-5 -translate-x-full duration-300 print:hidden"
+      >
+        <div class="sheet-header flex justify-between mb-10">
+          <h1 class="text-3xl font-bold">Your Product</h1>
+          <button
+            id="inventorySheetCloseBtn"
+            class="active:scale-90 duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8 pointer-events-none"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="sheet-body mb-10" id="productGroup"></div>
+
+        <form action="" id="newProductForm">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-3">
+              <label
+                for="new_product_name"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >New Product Name
+              </label>
+              <input
+                type="text"
+                id="new_product_name"
+                name="new_product_name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="eg. Strawberry"
+                required
+              />
+            </div>
+
+            <div class="col-span-2">
+              <label
+                for="new_product_price"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >New Product Price</label
+              >
+              <input
+                type="number"
+                id="new_product_price"
+                name="new_product_price"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="eg. 500"
+                required
+              />
+            </div>
+
+            <!-- <div class="col-span-1"> -->
+            <button
+              type="submit"
+              class="col-span-1 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 h-full"
+            >
+              Submit
+            </button>
+            <!-- </div> -->
+          </div>
+        </form>
+      </section>
+
+      <footer class="mt-auto flex justify-end print:hidden">
+        <button
+          type="button"
+          id="manageInventoryBtn"
+          class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        >
+          Manage Inventory
+        </button>
+        <button
+          type="button"
+          id="printBtn"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          Print
+        </button>
+      </footer>
+
       <template id="rowTemplate">
         <tr
-          class="group bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          class="row group bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
+          <td
+            class="row-product-number px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+          ></td>
           <th
             scope="row"
             class="row-product-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
             Apple MacBook Pro 17"
           </th>
-          <td class="px-6 py-4">$<span class="row-product-price">0</span></td>
-          <td class="px-6 py-4 text-center">
+          <td class="px-6 py-4 text-end">$<span class="row-product-price">0</span></td>
+          <td class="px-6 py-4 text-end">
             <button
-              class="bg-gray-100 p-1 rounded group-hover:opacity-100 opacity-0 duration-300 -translate-x-10 group-hover:translate-x-0"
+              class="row-q-sub bg-gray-100 p-1 rounded group-hover:opacity-100 opacity-0 duration-300 -translate-x-10 group-hover:translate-x-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +228,7 @@
             </button>
             <span class="row-product-quantity text-center">0</span>
             <button
-              class="bg-gray-100 p-1 rounded group-hover:opacity-100 opacity-0 duration-300 translate-x-10 group-hover:translate-x-0"
+              class="row-q-add bg-gray-100 p-1 rounded group-hover:opacity-100 opacity-0 duration-300 translate-x-10 group-hover:translate-x-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +236,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-3 h-3"
+                class="w-3 h-3 pointer-events-none"
               >
                 <path
                   stroke-linecap="round"
@@ -147,10 +246,12 @@
               </svg>
             </button>
           </td>
-          <td class="px-6 py-4">$ <span class="row-product-coast">0</span></td>
+          <td class="px-6 py-4 text-end">
+            $ <span class="row-product-coast">000</span>
+          </td>
           <td class="px-6 py-4 text-right">
             <button
-              class="translate-x-10 group-hover:translate-x-0 duration-300 opacity-0 group-hover:opacity-100 font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              class="row-delete-btn translate-x-10 group-hover:translate-x-0 duration-300 opacity-0 group-hover:opacity-100 font-medium text-blue-600 dark:text-blue-500 hover:underline"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -169,6 +270,16 @@
             </button>
           </td>
         </tr>
+      </template>
+
+      <template id="productTemplate">
+        <div class="flex justify-between border-2 border-gray-600 p-4 rounded mb-4">
+          <p class="product-name text-gray-600">Apple</p>
+          <p class="text-gray-600">
+            $
+            <span class="product-price">500</span>
+          </p>
+        </div>
       </template>
     </div>
     <script type="module" src="/main.js"></script>
