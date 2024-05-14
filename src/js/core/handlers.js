@@ -37,7 +37,7 @@ export const createFormHandler = (event) => {
   } else {
     rowGroup.append(createRecord(currentProduct, currentQuantity));
   }
-  updateRecordTotal();
+  // updateRecordTotal();
   createForm.reset();
 };
 

@@ -1,5 +1,6 @@
 import { parse } from "postcss";
 import { recordTotal, rowGroup, rowTemplate } from "./selectors";
+import Swal from "sweetalert2";
 
 export const createRecord = ({ id, name, price }, quantity) => {
   const record = rowTemplate.content.cloneNode(true);
@@ -15,11 +16,41 @@ export const createRecord = ({ id, name, price }, quantity) => {
 };
 
 export const deleteRecord = (event) => {
+  // console.log(event.target)
   const row = event.target.closest(".row");
-  if (confirm("Are you sure to remove?")) {
-    row.remove();
-    // updateRecordTotal();
-  }
+  // console.log(row);
+  // if (confirm("Are U sure delete row ?")) {
+  //   row.remove();
+  //   // updateRecordTotal();
+  // }
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      row.remove();
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "bottom-start",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Remove record successfully",
+      });
+    }
+  });
 };
 
 export const updateRecordTotal = () => {
